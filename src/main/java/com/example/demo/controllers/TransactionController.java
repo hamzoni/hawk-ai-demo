@@ -1,6 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.domains.Transaction;
+import com.example.demo.domains.es.Transaction;
 import com.example.demo.services.TransactionService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;

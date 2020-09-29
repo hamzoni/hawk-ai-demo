@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
-import com.example.demo.domains.DormantAccount;
-import com.example.demo.domains.Transaction;
+import com.example.demo.domains.es.DormantAccount;
+import com.example.demo.domains.es.Transaction;
 import com.example.demo.repositories.DormantAccountRepository;
 import com.example.demo.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
