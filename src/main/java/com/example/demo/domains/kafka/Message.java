@@ -7,15 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
-
 
 @Data
 @Builder
 @EqualsAndHashCode
-public class Message implements Serializable {
+public class Message {
     private String sender;
-    private Object content;
+    private String content;
     private String timestamp;
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.demo.services;
+package com.example.demo.services.core;
 
 import com.example.demo.domains.es.Transaction;
 import org.springframework.data.domain.Page;

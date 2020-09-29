@@ -1,4 +1,4 @@
-package com.example.demo.services;
+package com.example.demo.services.core;
 
 import com.example.demo.constants.KafkaConstants;
 import com.example.demo.domains.es.DormantAccount;
@@ -6,6 +6,7 @@ import com.example.demo.domains.es.Transaction;
 import com.example.demo.domains.kafka.Message;
 import com.example.demo.repositories.DormantAccountRepository;
 import com.example.demo.repositories.TransactionRepository;
+import com.example.demo.services.kafka.KafkaPublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -29,7 +30,7 @@ public class TransactionServiceImpl implements TransactionService {
     DormantAccountRepository dormantAccountRepository;
 
     @Autowired
-    KafkaService kafkaService;
+    KafkaPublisherService kafkaService;
 
     @Override
     public void putTransaction(Transaction transaction) {
@@ -47,7 +48,7 @@ public class TransactionServiceImpl implements TransactionService {
         var lastSenderTransaction = transactionRepository.findBySendingAccount_AccountNumber(senderNumber, pageable).stream().findFirst();
 
         lastReceiverTransaction.ifPresent(value -> checkDormantAccountActivation(value, true));
-        lastSenderTransaction.ifPresent(value -> checkDormantAccountActivation(value, true));
+        lastSenderTransaction.ifPresent(value -> checkDormantAccountActivation(value, false));
 
         // store the transaction
         transactionRepository.save(transaction);
@@ -75,7 +76,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private void activateDormantAccount(DormantAccount dormantAccount) {
         dormantAccountRepository.save(dormantAccount);
-        var message = Message.builder().content(dormantAccount).build();
+        var message = Message.builder().content(dormantAccount.toString()).build();
         kafkaService.sendMessage(KafkaConstants.KAFKA_TOPIC, message);
     }
 
