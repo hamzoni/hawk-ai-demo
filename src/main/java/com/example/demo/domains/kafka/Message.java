@@ -3,16 +3,19 @@ package com.example.demo.domains.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
+
 @Data
+@Builder
 @EqualsAndHashCode
 public class Message implements Serializable {
     private String sender;
-    private String content;
+    private Object content;
     private String timestamp;
 
     @Override

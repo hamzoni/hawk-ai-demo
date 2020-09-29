@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.domains.es.Transaction;
 import com.example.demo.services.TransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,12 +10,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("transactions")
 public class TransactionController {
 
-    private final
+    @Autowired
     TransactionService transactionService;
-
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
-    }
 
     @PostMapping()
     public Object putTransaction(

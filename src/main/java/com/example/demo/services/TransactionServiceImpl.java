@@ -1,10 +1,13 @@
 package com.example.demo.services;
 
+import com.example.demo.constants.KafkaConstants;
 import com.example.demo.domains.es.DormantAccount;
 import com.example.demo.domains.es.Transaction;
+import com.example.demo.domains.kafka.Message;
 import com.example.demo.repositories.DormantAccountRepository;
 import com.example.demo.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +19,17 @@ import java.util.Date;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
+    @Value("${spring.application.name}")
+    public static String APP_NAME;
+
     @Autowired
     TransactionRepository transactionRepository;
 
     @Autowired
     DormantAccountRepository dormantAccountRepository;
+
+    @Autowired
+    KafkaService kafkaService;
 
     @Override
     public void putTransaction(Transaction transaction) {
@@ -58,10 +67,16 @@ public class TransactionServiceImpl implements TransactionService {
         // rule #1 - last transaction occurs less than X time compare today
         var targetTime = transaction.getBankProcessingTimestamp();
         var secondsDifferent = (new Date().getTime() - targetTime.getTime()) / 1000;
+
 //        if (secondsDifferent > 5) {
-//            dormantAccountRepository.save(dormantAccount);
+        activateDormantAccount(dormantAccount);
 //        }
+    }
+
+    private void activateDormantAccount(DormantAccount dormantAccount) {
         dormantAccountRepository.save(dormantAccount);
+        var message = Message.builder().content(dormantAccount).build();
+        kafkaService.sendMessage(KafkaConstants.KAFKA_TOPIC, message);
     }
 
     @Override
