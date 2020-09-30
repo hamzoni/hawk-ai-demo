@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.constants.QueueEvents;
 import com.example.demo.domains.es.Transaction;
 import com.example.demo.domains.kafka.Message;
 import com.example.demo.services.core.TransactionService;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("transactions")
 public class TransactionController {
-
     @Autowired
     TransactionService transactionService;
 
@@ -36,11 +36,15 @@ public class TransactionController {
     }
 
     // WebSocket
-    @MessageMapping("/sendMessage")
-    @SendTo("/topic/group")
-    public Message broadcastGroupMessage(@Payload Message message) {
-        System.out.println("Sending message");
-        //Sending this message to all the subscribers
+    @MessageMapping("/" + QueueEvents.PUT_TRANSACTION)
+    @SendTo(QueueEvents.PUT_TRANSACTION)
+    public Message wsPutTransaction(@Payload Message message) {
+        return message;
+    }
+
+    @MessageMapping("/" + QueueEvents.ACTIVATE_DORMANT)
+    @SendTo("/" + QueueEvents.ACTIVATE_DORMANT)
+    public Message wsActivateDormant(@Payload Message message) {
         return message;
     }
 }

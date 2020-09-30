@@ -76,7 +76,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private void activateDormantAccount(DormantAccount dormantAccount) {
         dormantAccountRepository.save(dormantAccount);
-        var message = Message.builder().content(dormantAccount.toString()).build();
+        var message = Message.builder().content(dormantAccount).build();
         kafkaService.sendMessage(KafkaConstants.KAFKA_TOPIC, message);
     }
 

@@ -1,5 +1,6 @@
 package com.example.demo.configs;
 
+import com.example.demo.constants.WsConstants;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -12,7 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // chat client will use this to connect to the server
-        registry.addEndpoint("/ws-chat").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint(WsConstants.WS_ENDPOINT).setAllowedOrigins("*").withSockJS();
     }
 
     @Override

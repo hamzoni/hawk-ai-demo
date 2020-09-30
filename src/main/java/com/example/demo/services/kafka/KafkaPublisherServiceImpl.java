@@ -24,7 +24,7 @@ public class KafkaPublisherServiceImpl implements KafkaPublisherService {
             if (message.toString().isEmpty()) {
                 log.error("Message is null, unable to send to Kafka");
             } else {
-                kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, message).get();
+                kafkaTemplate.send(topic, message).get();
             }
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
