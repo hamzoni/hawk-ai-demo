@@ -1,6 +1,6 @@
 package com.example.demo.services.core;
 
-import com.example.demo.constants.KafkaConstants;
+import com.example.demo.constants.QueueEvents;
 import com.example.demo.domains.es.DormantAccount;
 import com.example.demo.domains.es.Transaction;
 import com.example.demo.domains.kafka.Message;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -33,6 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
     KafkaPublisherService kafkaService;
 
     @Override
+    @Transactional
     public void putTransaction(Transaction transaction) {
 
         // check if the transaction is activation of dormant account, applied for both receiver and sender
@@ -51,7 +53,11 @@ public class TransactionServiceImpl implements TransactionService {
         lastSenderTransaction.ifPresent(value -> checkDormantAccountActivation(value, false));
 
         // store the transaction
-        transactionRepository.save(transaction);
+        transaction = transactionRepository.save(transaction);
+
+        // trigger notification new transactions
+        var message = Message.builder().content(transaction).build();
+        kafkaService.sendMessage(QueueEvents.ACTIVATE_DORMANT, message);
     }
 
     private void checkDormantAccountActivation(Transaction transaction, boolean isReceiver) {
@@ -77,7 +83,7 @@ public class TransactionServiceImpl implements TransactionService {
     private void activateDormantAccount(DormantAccount dormantAccount) {
         dormantAccountRepository.save(dormantAccount);
         var message = Message.builder().content(dormantAccount).build();
-        kafkaService.sendMessage(KafkaConstants.KAFKA_TOPIC, message);
+        kafkaService.sendMessage(QueueEvents.ACTIVATE_DORMANT, message);
     }
 
     @Override

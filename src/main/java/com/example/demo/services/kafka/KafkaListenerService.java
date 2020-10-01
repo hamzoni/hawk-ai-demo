@@ -1,6 +1,5 @@
 package com.example.demo.services.kafka;
 
-import com.example.demo.constants.KafkaConstants;
 import com.example.demo.constants.QueueEvents;
 import com.example.demo.domains.kafka.Message;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,7 @@ public class KafkaListenerService {
     SimpMessagingTemplate template;
 
     @KafkaListener(
-            topics = KafkaConstants.KAFKA_TOPIC,
+            topics = QueueEvents.ACTIVATE_DORMANT,
             groupId = QueueEvents.ACTIVATE_DORMANT
     )
     public void listenActivateDormant(Message message) {
@@ -25,7 +24,7 @@ public class KafkaListenerService {
     }
 
     @KafkaListener(
-            topics = KafkaConstants.KAFKA_TOPIC,
+            topics = QueueEvents.PUT_TRANSACTION,
             groupId = QueueEvents.PUT_TRANSACTION
     )
     public void listenPutTransaction(Message message) {
