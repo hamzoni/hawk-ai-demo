@@ -12,13 +12,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // chat client will use this to connect to the server
+        // endpoint for client to connect to
         registry.addEndpoint(WsConstants.WS_ENDPOINT).setAllowedOrigins("*").withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic/");
+        registry.enableSimpleBroker(WsConstants.WS_ENDPOINT + "/");
     }
 }

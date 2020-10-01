@@ -57,7 +57,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         // trigger notification new transactions
         var message = Message.builder().content(transaction).build();
-        kafkaService.sendMessage(QueueEvents.ACTIVATE_DORMANT, message);
+        kafkaService.sendMessage(QueueEvents.PUT_TRANSACTION, message);
     }
 
     private void checkDormantAccountActivation(Transaction transaction, boolean isReceiver) {
@@ -87,7 +87,10 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Page listTransactions(Pageable page) {
-        return transactionRepository.findAll(page);
+    public Page listTransactions(Pageable page, String type) {
+        if (type.equals(QueueEvents.PUT_TRANSACTION)) {
+            return transactionRepository.findAll(page);
+        }
+        return dormantAccountRepository.findAll(page);
     }
 }

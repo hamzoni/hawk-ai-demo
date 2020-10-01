@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 public interface TransactionService {
     void putTransaction(Transaction transaction);
 
-    Page listTransactions(Pageable page);
+    Page listTransactions(Pageable page, String type);
 }
