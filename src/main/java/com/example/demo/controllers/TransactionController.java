@@ -8,6 +8,7 @@ import com.example.demo.services.core.TransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -35,7 +36,7 @@ public class TransactionController {
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
             @RequestParam(name = "type", defaultValue = QueueEvents.PUT_TRANSACTION, required = false) String type
     ) {
-        var pageable = PageRequest.of(page, size);
+        var pageable = PageRequest.of(page, size, Sort.by("recordDate").ascending());
         return transactionService.listTransactions(pageable, type);
     }
 
