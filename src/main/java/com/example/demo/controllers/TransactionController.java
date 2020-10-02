@@ -36,7 +36,7 @@ public class TransactionController {
             @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
             @RequestParam(name = "type", defaultValue = QueueEvents.PUT_TRANSACTION, required = false) String type
     ) {
-        var pageable = PageRequest.of(page, size, Sort.by("recordDate").ascending());
+        var pageable = PageRequest.of(page, size, Sort.by("recordDate").descending());
         return transactionService.listTransactions(pageable, type);
     }
 
